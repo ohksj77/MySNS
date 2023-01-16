@@ -4,6 +4,7 @@
 
 .idea
 .env
+/storage
 
 # User-specific stuff
 .idea/**/workspace.xml
