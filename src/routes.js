@@ -1,9 +1,13 @@
 const Router = require('@koa/router');
 const router = new Router();
 
+const { myLogging } = require('../middleware/logging')
+
 const webController = require('./web/controller');
 const userApiController = require('./api/user/controller');
 const feedApiController = require('./api/feed/controller');
+
+router.use(myLogging);
 
 router.get('/', webController.home);
 router.get('/page/:page', webController.page);

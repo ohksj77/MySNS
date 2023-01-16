@@ -3,9 +3,20 @@ exports.home = (ctx, next) => {
     ctx.body = "홈페이지";
 }
 
-exports.page = (ctx, next) => {
-    let name = ctx.body.name;
-    // let { name } = ctx.params; // 이거는 바로 위 코드와 같은 동작하는 코드
+exports.page = async (ctx, next) => {
+    let page = ctx.params.page;
+    let pagename = "";
+    switch (page) {
+        case 'terms':
+            pagename = "이용약관";
+            break;
+        case 'policy':
+            pagename = "개인정보 처리방침";
+            break;
+        default:
+            pagename = "기본";
+            break;
+    }
 
-    ctx.body = name;
+    await ctx.render('index', { pagename });
 }
