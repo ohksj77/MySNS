@@ -1,0 +1,24 @@
+{
+  "name": "koa-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon --watch src/ index.js --inspect=0.0.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/router": "^12.0.0",
+    "koa": "^2.14.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-static": "^5.0.0",
+    "moment": "^2.29.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
