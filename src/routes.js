@@ -2,6 +2,7 @@ const Router = require('@koa/router');
 const router = new Router();
 
 const { myLogging } = require('../middleware/logging')
+const { verify } = require('../middleware/auth')
 
 const webController = require('./web/controller');
 const userApiController = require('./api/user/controller');
@@ -12,6 +13,10 @@ router.use(myLogging);
 router.get('/', webController.home);
 router.get('/page/:page', webController.page);
 
+router.post('/api/user/register', userApiController.register);
+router.post('/api/user/login', userApiController.login);
+
+router.use(verify);
 router.get('/api/user/:id', userApiController.info);
 
 router.get('/api/feed', feedApiController.index);
