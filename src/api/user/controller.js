@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'my-secret-key';
 const Promise = require('promise');
 
 exports.info = (ctx, next) => {
@@ -28,7 +27,7 @@ exports.login = async (ctx, next) => {
 
 let generateToken = (payload) => {
     return new Promise((resolve, reject) => {
-        jwt.sign(payload, SECRET_KEY, (error, token) => {
+        jwt.sign(payload, process.env.APP_KEY, (error, token) => {
             error ? reject(error) : resolve(token);
         })
     })
