@@ -1,16 +1,25 @@
-const { register } = require('./query')
+const { register, login, findById } = require('./query')
 const jwt = require('jsonwebtoken');
 const Promise = require('promise');
+const crypto = require('crypto');
 
-exports.info = (ctx, next) => {
+exports.info = async (ctx, next) => {
     let id = ctx.params.id;
-    ctx.body = `${id} 회원에 대한 정보`;
+    let result = await findById(id);
+    if (result != null) {
+        ctx.body = result;
+    } else {
+        ctx.body = {
+            result: "fail"
+        }
+    }
 }
 
 exports.register = async (ctx, next) => {
     let { email, password, name } = ctx.request.body;
+    let result = crypto.pbkdf2Sync(password, process.env.APP_KEY, 50, 100, 'sha512');
 
-    let { affectedRows } = await register(email, password, name);
+    let { affectedRows } = await register(email, result.toString('base64'), name);
     if (affectedRows > 0) {
         let token = await generateToken( {name});
         ctx.body = token;
@@ -20,17 +29,16 @@ exports.register = async (ctx, next) => {
 }
 
 exports.login = async (ctx, next) => {
-    let { id, pw } = ctx.request.body;
+    let { email, password } = ctx.request.body;
+    let result = crypto.pbkdf2Sync(password, process.env.APP_KEY, 50, 100, 'sha512');
+    let item = await login(email, result.toString('base64'));
 
-    let result = '';
-
-    if (id === 'admin' && pw === '1234') {
-        result = await generateToken({name: 'abc'});
+    if (item == null) {
+        ctx.body = { result: "fail" };
     } else {
-        result = '아이디 혹은 패스워드가 올바르지 않습니다.';
+        let token = await generateToken({name: item.name});
+        ctx.body = token;
     }
-
-    ctx.body = result;
 }
 
 let generateToken = (payload) => {

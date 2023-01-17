@@ -30,7 +30,7 @@ router.get('/api/user/:id', userApiController.info);
 router.get('/api/feed', feedApiController.index);
 router.post('/api/feed', feedApiController.store);
 router.get('/api/feed/:id', feedApiController.show);
-router.get('/api/feed/:id', feedApiController.update);
-router.get('/api/feed/:id', feedApiController.delete);
+router.put('/api/feed/:id', feedApiController.update);
+router.del('/api/feed/:id', feedApiController.delete);
 
 module.exports = router;

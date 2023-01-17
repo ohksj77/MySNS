@@ -1,27 +1,68 @@
-exports.index = (ctx, next) => {
-    let query = ctx.query;
-    console.log(`새로운 글인가요? ${isNewFeed('2023-01-12 15:17:30')}`)
-    ctx.body = query;
-};
-
-exports.store = (ctx, next) => {
-    let body = ctx.request.body;
-    ctx.body = body;
-};
-
-exports.show = (ctx, next) => {
-    let id = ctx.params.id;
-    ctx.body = `${id} 피드 상세`;
-};
-
-exports.update = (ctx, next) => {
-    let id = ctx.params.id;
-    ctx.body = `${id} 피드 수정`;
-};
-
-exports.delete = (ctx, next) => {
-    let id = ctx.params.id;
-    ctx.body = `${id} 피드 삭제`;
-};
-
+const { create, show, update, deleteById, findAll } = require('./query');
 const { isNewFeed } = require('../../common/formatter/date');
+
+exports.index = async (ctx, next) => {
+    let result = await findAll();
+    if (result.length > 0) {
+        ctx.body = result
+    } else {
+        ctx.body = {
+            result: 'No Content'
+        };
+    }
+};
+
+exports.store = async (ctx, next) => {
+    let body = ctx.request.body;
+    let { affectedRows, insertId } = await create(body.user_id, body.image_id, body.content);
+    if (affectedRows > 0) {
+        ctx.body = {
+            result: 'ok',
+            id: insertId
+        }
+    } else {
+        ctx.body = {
+            result: 'fail',
+        }
+    }
+};
+
+exports.show = async (ctx, next) => {
+    let id = ctx.params.id;
+    let result = await show(id);
+    if (result.length < 1) {
+        ctx.body = { result: "fail" }
+        return;
+    }
+    ctx.body = result;
+};
+
+exports.update = async (ctx, next) => {
+    let id = ctx.params.id;
+    let body = ctx.request.body;
+    let { affectedRows, updateId } = await update(id, body.user_id, body.image_id, body.content);
+    if (affectedRows > 0) {
+        ctx.body = {
+            result: 'ok',
+            id: updateId
+        }
+    } else {
+        ctx.body = {
+            result: 'fail',
+        }
+    }
+};
+
+exports.delete = async (ctx, next) => {
+    let id = ctx.params.id;
+    let { affectedRows } = await deleteById(id);
+    if (affectedRows > 0) {
+        ctx.body = {
+            result: 'ok'
+        }
+    } else {
+        ctx.body = {
+            result: 'fail',
+        }
+    }
+};
