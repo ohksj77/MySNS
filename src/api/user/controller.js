@@ -1,3 +1,4 @@
+const { register } = require('./query')
 const jwt = require('jsonwebtoken');
 const Promise = require('promise');
 
@@ -7,8 +8,15 @@ exports.info = (ctx, next) => {
 }
 
 exports.register = async (ctx, next) => {
-    let token = await generateToken({name: 'my-name'});
-    ctx.body = token;
+    let { email, password, name } = ctx.request.body;
+
+    let { affectedRows } = await register(email, password, name);
+    if (affectedRows > 0) {
+        let token = await generateToken( {name});
+        ctx.body = token;
+    } else {
+        ctx.body = {result: "fail"};
+    }
 }
 
 exports.login = async (ctx, next) => {

@@ -9,7 +9,7 @@ const router = new Router();
 //서버 실행 포트
 const port = process.env.PORT || 3000;
 // 바디파서
-app.use(bodyParser({formLimit: '5mb'}));
+app.use(bodyParser({formLimit: '10mb'}));
 // 라우터 설정
 router.use(require('./src/routes').routes());
 app.use(router.routes());
