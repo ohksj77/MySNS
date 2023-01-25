@@ -2,7 +2,7 @@ const { pool } = require('../../data');
 const {isNewFeed} = require("../../common/formatter/date");
 
 exports.findAll = async () => {
-    const query = `SELECT * FROM feed`;
+    const query = `SELECT f.created_at, f.image_id, f.content, u.name FROM feed f, user u  where f.user_id = u.id`;
     let result = await pool(query, []);
     if (result.length < 0) {
         return null;
@@ -20,7 +20,7 @@ exports.create = async (user_id, image_id, content) => {
 }
 
 exports.show = async (id) => {
-    const query = `SELECT * FROM feed WHERE id = ?`;
+    const query = `SELECT f.created_at, f.image_id, f.content, u.name FROM feed f, user u WHERE f.id = ? and f.user_id = u.id`;
     let result = await pool(query, [id]);
     return (result.lenth < 0) ? null : result[0];
 }

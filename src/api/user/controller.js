@@ -19,9 +19,9 @@ exports.register = async (ctx, next) => {
     let { email, password, name } = ctx.request.body;
     let result = await crypto.pbkdf2Sync(password, process.env.APP_KEY, 50, 100, 'sha512');
 
-    let { affectedRows } = await register(email, result.toString('base64'), name);
+    let { affectedRows, insertId } = await register(email, result.toString('base64'), name);
     if (affectedRows > 0) {
-        let token = await generateToken( {name});
+        let token = await generateToken( {name, id: insertId});
         ctx.body = token;
     } else {
         ctx.body = {result: "fail"};
@@ -36,7 +36,7 @@ exports.login = async (ctx, next) => {
     if (item == null) {
         ctx.body = { result: "fail" };
     } else {
-        let token = await generateToken({name: item.name});
+        let token = await generateToken({name: item.name, id: item.id});
         ctx.body = token;
     }
 }

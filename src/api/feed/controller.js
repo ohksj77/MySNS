@@ -29,7 +29,10 @@ exports.store = async (ctx, next) => {
 
 exports.show = async (ctx, next) => {
     let id = ctx.params.id;
+    let user = ctx.request.user;
+
     let result = await show(id);
+    result['is_me'] = (user.id === result.user_id);
     if (result.length < 1) {
         ctx.body = { result: "fail" }
         return;
